@@ -1,0 +1,6 @@
+ASNACN_DIR: dataview/
+PROJECT_NAME: aruco_marker_detection
+deps:
+- external/aruco: ''
+- types/base: ''
+- types/base_support: ''

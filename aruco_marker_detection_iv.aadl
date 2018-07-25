@@ -1,0 +1,146 @@
+---------------------------------------------------
+-- AADL2.1
+-- TASTE type interfaceview
+-- 
+-- generated code: do not edit
+---------------------------------------------------
+
+PACKAGE interfaceview::IV::aruco_marker_detector
+PUBLIC
+
+WITH interfaceview::IV::dummy_consumer;
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+SUBPROGRAM PI_trigger
+PROPERTIES
+  Taste::Associated_Queue_Size => 1;
+END PI_trigger;
+
+SUBPROGRAM IMPLEMENTATION PI_trigger.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 0 ms;
+END PI_trigger.others;
+
+SUBPROGRAM RI_pose
+FEATURES
+  sample : IN PARAMETER DataView::Base_samples_RigidBodyState {
+    Taste::encoding => NATIVE;
+  };
+END RI_pose;
+
+SUBPROGRAM IMPLEMENTATION RI_pose.others
+END RI_pose.others;
+
+SYSTEM aruco_marker_detector
+FEATURES
+  PI_trigger : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::aruco_marker_detector::PI_trigger.others {
+    Taste::coordinates => "37503 29777";
+    Taste::RCMoperationKind => cyclic;
+    Taste::RCMperiod => 100 ms;
+    Taste::Deadline => 0 ms;
+    Taste::InterfaceName => "trigger";
+  };
+  RI_pose : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::dummy_consumer::PI_sample.others {
+    Taste::coordinates => "86558 35197";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "pose";
+    Taste::labelInheritance => "false";
+  };
+PROPERTIES
+  Source_Language => (CPP);
+  Taste::Active_Interfaces => any;
+END aruco_marker_detector;
+
+SYSTEM IMPLEMENTATION aruco_marker_detector.others
+SUBCOMPONENTS
+  capture_device_id : DATA DataView::T_Int32 {
+    Taste::FS_Default_Value => "0";
+  };
+  marker_size : DATA DataView::T_Double {
+    Taste::FS_Default_Value => "0.067";
+  };
+  draw_augmented_image : DATA DataView::T_Int32 {
+    Taste::FS_Default_Value => "1";
+  };
+  compilerOption : DATA DataView::Taste_directive {
+    Taste::FS_Default_Value => "compiler-option:""-D OROCOS_TARGET=gnulinux""";
+  };
+END aruco_marker_detector.others;
+
+END interfaceview::IV::aruco_marker_detector;
+
+PACKAGE interfaceview::IV::dummy_consumer
+PUBLIC
+
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+SUBPROGRAM PI_sample
+FEATURES
+  sample : IN PARAMETER DataView::Base_samples_RigidBodyState {
+    Taste::encoding => NATIVE;
+  };
+PROPERTIES
+  Taste::Associated_Queue_Size => 1;
+END PI_sample;
+
+SUBPROGRAM IMPLEMENTATION PI_sample.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 0 ms;
+END PI_sample.others;
+
+SYSTEM dummy_consumer
+FEATURES
+  PI_sample : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::dummy_consumer::PI_sample.others {
+    Taste::coordinates => "137034 36185";
+    Taste::RCMoperationKind => sporadic;
+    Taste::RCMperiod => 0 ms;
+    Taste::Deadline => 0 ms;
+    Taste::InterfaceName => "sample";
+  };
+PROPERTIES
+  Source_Language => (CPP);
+  Taste::Active_Interfaces => any;
+END dummy_consumer;
+
+SYSTEM IMPLEMENTATION dummy_consumer.others
+END dummy_consumer.others;
+
+END interfaceview::IV::dummy_consumer;
+
+PACKAGE interfaceview::IV
+PUBLIC
+
+WITH interfaceview::IV::aruco_marker_detector;
+WITH interfaceview::IV::dummy_consumer;
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+SYSTEM interfaceview
+PROPERTIES
+  Taste::dataView => ("DataView");
+  Taste::dataViewPath => ("aruco_marker_detection_dv.aadl");
+END interfaceview;
+
+SYSTEM IMPLEMENTATION interfaceview.others
+SUBCOMPONENTS
+  aruco_marker_detector : SYSTEM interfaceview::IV::aruco_marker_detector::aruco_marker_detector.others {
+    Taste::coordinates => "37503 24357 86558 68535";
+  };
+  dummy_consumer : SYSTEM interfaceview::IV::dummy_consumer::dummy_consumer.others {
+    Taste::coordinates => "137034 30765 197202 69250";
+  };
+CONNECTIONS
+  dummy_consumer_PI_sample_aruco_marker_detector_RI_pose : SUBPROGRAM ACCESS dummy_consumer.PI_sample -> aruco_marker_detector.RI_pose {
+    Taste::coordinates => "86558 35197 111963 35197 111963 36185 137034 36185";
+  };
+END interfaceview.others;
+
+PROPERTIES
+  Taste::dataView => ("DataView");
+  Taste::dataViewPath => ("aruco_marker_detection_dv.aadl");
+  Taste::coordinates => "0 0 297000 210000";
+  Taste::version => "2.0";
+END interfaceview::IV;
+

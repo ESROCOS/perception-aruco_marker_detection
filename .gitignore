@@ -1,0 +1,11 @@
+.cache
+*.md5
+binary.c
+*.old
+*.pro
+*.zip
+system_config.h
+__*.aadl
+build
+debug
+
