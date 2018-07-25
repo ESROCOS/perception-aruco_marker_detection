@@ -65,8 +65,6 @@ SKELS="./"
 # Check if Dataview references existing files 
 mono $(which taste-extract-asn-from-design.exe) -i "$INTERFACEVIEW" -j /tmp/dv.asn
 
-cd "$SKELS" && rm -f aruco_marker_detector.zip && zip aruco_marker_detector aruco_marker_detector/* && cd $OLDPWD
-
 cd "$SKELS" && rm -f dummy_consumer.zip && zip dummy_consumer dummy_consumer/* && cd $OLDPWD
 
 [ ! -z "$CLEANUP" ] && rm -rf binary*
@@ -109,7 +107,7 @@ cd "$CWD" && assert-builder-ocarina.py \
 	--interfaceView "$INTERFACEVIEW" \
 	--deploymentView "$DEPLOYMENTVIEW" \
 	-o "$OUTPUTDIR" \
-	--subCPP aruco_marker_detector:"$SKELS"/aruco_marker_detector.zip \
+	--subCPP aruco_marker_detector:aruco_marker_detector.zip \
 	--subCPP dummy_consumer:"$SKELS"/dummy_consumer.zip \
 	$ORCHESTRATOR_OPTIONS
 

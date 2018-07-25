@@ -37,7 +37,7 @@ esrocos_add_dependency(PARTITION test_arcuo_marker_detector
 ########### FOR COMPONENT PROJECTS ################
 
 #uncomment if you want to export a function
-#esrocos_export_function("example" "tutorial/example_dir")
+esrocos_export_function("aruco_marker_detector" "share/taste_components/aruco_marker_detection")
 
 #uncomment to export PKG-CONFIG-file
 esrocos_export_pkgconfig( VERSION 1.0

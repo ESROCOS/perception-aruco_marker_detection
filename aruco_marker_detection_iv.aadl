@@ -50,6 +50,7 @@ FEATURES
 PROPERTIES
   Source_Language => (CPP);
   Taste::Active_Interfaces => any;
+  Source_Text => ("aruco_marker_detector.zip");
 END aruco_marker_detector;
 
 SYSTEM IMPLEMENTATION aruco_marker_detector.others
