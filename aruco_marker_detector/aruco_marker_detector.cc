@@ -7,11 +7,26 @@
 #include "Context-aruco-marker-detector.h"
 #include <base/samples/RigidBodyState.hpp>
 #include <base_support/Base-samples-RigidBodyStateConvert.hpp>
+#include <cstring>
 
 using namespace cv;
 aruco::MarkerDetector  detector;
 VideoCapture cap; // open the default camera
 aruco::CameraParameters calib;
+
+void init_rbs(asn1SccBase_samples_RigidBodyState *rbs)
+{
+   memset(rbs, 0, sizeof(asn1SccBase_samples_RigidBodyState));
+   rbs->position.data.nCount = 3;
+   rbs->cov_position.data.nCount = 9;
+   rbs->orientation.im.nCount = 3;
+   rbs->cov_orientation.data.nCount = 9;
+   rbs->velocity.data.nCount = 3;
+   rbs->cov_velocity.data.nCount = 9;
+   rbs->angular_velocity.data.nCount = 3;
+   rbs->cov_angular_velocity.data.nCount = 9;
+}
+
 void aruco_marker_detector_startup()
 {
     /* Write your initialization code here,
@@ -74,7 +89,9 @@ void aruco_marker_detector_PI_trigger()
         double position[3];
         double orientation[4];
         detected_markers[0].OgreGetPoseParameters(position, orientation);
+
         asn1SccBase_samples_RigidBodyState rbs_a;
+	init_rbs(&rbs_a);
 
         base::samples::RigidBodyState rbs;
         rbs.time = base::Time::now();
