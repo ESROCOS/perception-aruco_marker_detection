@@ -14,9 +14,13 @@ aruco::MarkerDetector  detector;
 VideoCapture cap; // open the default camera
 aruco::CameraParameters calib;
 
-void init_rbs(asn1SccBase_samples_RigidBodyState *rbs)
+void null_rbs(asn1SccBase_samples_RigidBodyState *rbs)
 {
    memset(rbs, 0, sizeof(asn1SccBase_samples_RigidBodyState));
+}
+
+void ncount_rbs(asn1SccBase_samples_RigidBodyState *rbs)
+{
    rbs->position.data.nCount = 3;
    rbs->cov_position.data.nCount = 9;
    rbs->orientation.im.nCount = 3;
@@ -25,6 +29,12 @@ void init_rbs(asn1SccBase_samples_RigidBodyState *rbs)
    rbs->cov_velocity.data.nCount = 9;
    rbs->angular_velocity.data.nCount = 3;
    rbs->cov_angular_velocity.data.nCount = 9;
+}
+
+void init_rbs(asn1SccBase_samples_RigidBodyState *rbs)
+{
+  null_rbs(rbs);
+  ncount_rbs(rbs);
 }
 
 void aruco_marker_detector_startup()
@@ -105,7 +115,7 @@ void aruco_marker_detector_PI_trigger()
     	rbs.orientation.y() = orientation[2];
     	rbs.orientation.z() = orientation[3];
     	asn1SccBase_samples_RigidBodyState_toAsn1(rbs_a, rbs);
-
+        ncount_rbs(&rbs_a);
     	aruco_marker_detector_RI_pose(&rbs_a);
     }
 
