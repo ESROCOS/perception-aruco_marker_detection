@@ -7,7 +7,11 @@
 #include "Context-aruco-marker-detector.h"
 #include <base/samples/RigidBodyState.hpp>
 #include <base_support/Base-samples-RigidBodyStateConvert.hpp>
+#include <base_support/OpaqueConversion.hpp>
 #include <cstring>
+#include <iostream>
+
+#define DEBUG
 
 using namespace cv;
 aruco::MarkerDetector  detector;
@@ -41,6 +45,7 @@ void aruco_marker_detector_startup()
 {
     /* Write your initialization code here,
        but do not make any call to a required interface. */
+    std::cout << "[aruco_marker_detector_startup] startup\n";
 	detector.setThresholdMethod(detector.ADPT_THRES);
     detector.setThresholdParams(7, 7);
     detector.setCornerRefinementMethod(detector.SUBPIX);
@@ -103,19 +108,32 @@ void aruco_marker_detector_PI_trigger()
         asn1SccBase_samples_RigidBodyState rbs_a;
 	init_rbs(&rbs_a);
 
-        base::samples::RigidBodyState rbs;
-        rbs.time = base::Time::now();
-        rbs.sourceFrame = "marker";
-        rbs.targetFrame = "camera";
-        rbs.position.x() = position[0];
-        rbs.position.y() = position[1];
-        rbs.position.z() = position[2];
-        rbs.orientation.w() = orientation[0];
-    	rbs.orientation.x() = orientation[1];
-    	rbs.orientation.y() = orientation[2];
-    	rbs.orientation.z() = orientation[3];
-    	asn1SccBase_samples_RigidBodyState_toAsn1(rbs_a, rbs);
-        ncount_rbs(&rbs_a);
+        base::Vector3d pos(position[0], position[1], position[2]);
+	asn1Scc_Vector3d_toAsn1(rbs_a.position, pos);
+
+        base::Quaterniond orient(orientation[0], orientation[1], orientation[2], orientation[3]);
+	asn1Scc_Quaterniond_toAsn1(rbs_a.orientation, orient);
+
+#ifdef DEBUG
+	std::cout << "[aruco_marker_detector_PI_trigger] pos: " << pos.transpose() << " orient: " << orient.vec().transpose() << std::endl;
+#endif
+
+	base::Time ts(base::Time::now());
+        asn1SccBase_Time_toAsn1(rbs_a.time, ts);
+
+	// MS: This code was producing a ERR_BASE_SAMPLES_RIGIDBODYSTATE_COV_POSITION_DATA_ELM during encoding
+        //base::samples::RigidBodyState rbs;
+        //rbs.time = base::Time::now();
+        //rbs.sourceFrame = "marker";
+        //rbs.targetFrame = "camera";
+        //rbs.position.x() = position[0];
+        //rbs.position.y() = position[1];
+        //rbs.position.z() = position[2];
+        //rbs.orientation.w() = orientation[0];
+    	//rbs.orientation.x() = orientation[1];
+    	//rbs.orientation.y() = orientation[2];
+    	//rbs.orientation.z() = orientation[3];
+    	//asn1SccBase_samples_RigidBodyState_toAsn1(rbs_a, rbs);
     	aruco_marker_detector_RI_pose(&rbs_a);
     }
 

@@ -1,1 +1,1 @@
-<package><depend package="external/aruco" /><depend package="types/base" /></package>
+<package><depend package="external/aruco" /><depend package="types/base" /><depend package="types/base_support" /></package>
