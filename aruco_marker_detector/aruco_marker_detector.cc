@@ -12,7 +12,7 @@
 #include <cstdio>
 #include <iostream>
 
-#define DEBUG
+//#define DEBUG
 
 using namespace cv;
 aruco::MarkerDetector  detector;
