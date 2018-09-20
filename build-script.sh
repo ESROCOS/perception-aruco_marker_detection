@@ -65,7 +65,7 @@ SKELS="./"
 # Check if Dataview references existing files 
 mono $(which taste-extract-asn-from-design.exe) -i "$INTERFACEVIEW" -j /tmp/dv.asn
 
-cd "$SKELS" && rm -f dummy_consumer.zip && zip dummy_consumer dummy_consumer/* && cd $OLDPWD
+cd "$SKELS" && rm -f dummy_consumer.zip && zip -r dummy_consumer dummy_consumer/* && cd $OLDPWD || exit -1
 
 [ ! -z "$CLEANUP" ] && rm -rf binary*
 

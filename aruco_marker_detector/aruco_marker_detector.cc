@@ -9,6 +9,7 @@
 #include <base_support/Base-samples-RigidBodyStateConvert.hpp>
 #include <base_support/OpaqueConversion.hpp>
 #include <cstring>
+#include <cstdio>
 #include <iostream>
 
 #define DEBUG
@@ -101,40 +102,48 @@ void aruco_marker_detector_PI_trigger()
     }
 
     if(detected_markers.size() > 0){
-        double position[3];
-        double orientation[4];
-        detected_markers[0].OgreGetPoseParameters(position, orientation);
+        for (unsigned int i = 0; i < detected_markers.size(); i++)
+        {
+            double position[3];
+            double orientation[4];
+            detected_markers[i].OgreGetPoseParameters(position, orientation);
 
-        asn1SccBase_samples_RigidBodyState rbs_a;
-	init_rbs(&rbs_a);
+            asn1SccBase_samples_RigidBodyState rbs_a;
+	    init_rbs(&rbs_a);
 
-        base::Vector3d pos(position[0], position[1], position[2]);
-	asn1Scc_Vector3d_toAsn1(rbs_a.position, pos);
+            base::Vector3d pos(position[0], position[1], position[2]);
+	    asn1Scc_Vector3d_toAsn1(rbs_a.position, pos);
 
-        base::Quaterniond orient(orientation[0], orientation[1], orientation[2], orientation[3]);
-	asn1Scc_Quaterniond_toAsn1(rbs_a.orientation, orient);
+            base::Quaterniond orient(orientation[0], orientation[1], orientation[2], orientation[3]);
+	    asn1Scc_Quaterniond_toAsn1(rbs_a.orientation, orient);
 
 #ifdef DEBUG
-	std::cout << "[aruco_marker_detector_PI_trigger] pos: " << pos.transpose() << " orient: " << orient.vec().transpose() << std::endl;
+	    std::cout << "[aruco_marker_detector_PI_trigger] pos: " << pos.transpose() << " orient: " << orient.vec().transpose() << std::endl;
 #endif
 
-	base::Time ts(base::Time::now());
-        asn1SccBase_Time_toAsn1(rbs_a.time, ts);
+	    base::Time ts(base::Time::now());
+            asn1SccBase_Time_toAsn1(rbs_a.time, ts);
 
-	// MS: This code was producing a ERR_BASE_SAMPLES_RIGIDBODYSTATE_COV_POSITION_DATA_ELM during encoding
-        //base::samples::RigidBodyState rbs;
-        //rbs.time = base::Time::now();
-        //rbs.sourceFrame = "marker";
-        //rbs.targetFrame = "camera";
-        //rbs.position.x() = position[0];
-        //rbs.position.y() = position[1];
-        //rbs.position.z() = position[2];
-        //rbs.orientation.w() = orientation[0];
-    	//rbs.orientation.x() = orientation[1];
-    	//rbs.orientation.y() = orientation[2];
-    	//rbs.orientation.z() = orientation[3];
-    	//asn1SccBase_samples_RigidBodyState_toAsn1(rbs_a, rbs);
-    	aruco_marker_detector_RI_pose(&rbs_a);
+	    // MS: This code was producing a ERR_BASE_SAMPLES_RIGIDBODYSTATE_COV_POSITION_DATA_ELM during encoding
+            //base::samples::RigidBodyState rbs;
+            //rbs.time = base::Time::now();
+            //rbs.sourceFrame = "marker";
+            //rbs.targetFrame = "camera";
+            //rbs.position.x() = position[0];
+            //rbs.position.y() = position[1];
+            //rbs.position.z() = position[2];
+            //rbs.orientation.w() = orientation[0];
+    	    //rbs.orientation.x() = orientation[1];
+    	    //rbs.orientation.y() = orientation[2];
+    	    //rbs.orientation.z() = orientation[3];
+    	    //asn1SccBase_samples_RigidBodyState_toAsn1(rbs_a, rbs);
+
+            // Set marker information (just a number)
+            int markerId(detected_markers[i].id);
+            rbs_a.sourceframe.nCount = snprintf((char*)rbs_a.sourceframe.arr, 200, std::to_string(markerId).c_str());
+
+    	    aruco_marker_detector_RI_pose(&rbs_a);
+        }
     }
 
     if(aruco_marker_detector_ctxt.draw_augmented_image){
