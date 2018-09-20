@@ -140,10 +140,11 @@ void aruco_marker_detector_PI_trigger()
 
             // Set marker information (just a number)
             int markerId(detected_markers[i].id);
+            rbs_a.sourceframe.nCount = snprintf((char*)rbs_a.sourceframe.arr, 200, "%s", std::to_string(markerId).c_str());
 #ifdef DEBUG
             std::cout << "[aruco_marker_detector_PI_trigger] register marker id: " << markerId << std::endl;
+            std::cout << "[aruco_marker_detector_PI_trigger] in source frame: " << std::string((const char*)rbs_a.sourceframe.arr) << std::endl;
 #endif
-            rbs_a.sourceframe.nCount = snprintf((char*)rbs_a.sourceframe.arr, 200, "%s", std::to_string(markerId).c_str());
 
     	    aruco_marker_detector_RI_pose(&rbs_a);
         }
